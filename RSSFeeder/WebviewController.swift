@@ -20,34 +20,34 @@ class WebviewController: UIViewController, UIWebViewDelegate {
         self.title = self.Headline
     }
     
-    override func viewWillAppear(animated: Bool) {
-        let requestURL = NSURL(string: self.url)
-        let request = NSURLRequest(URL: requestURL)
+    override func viewWillAppear(_ animated: Bool) {
+        let requestURL = URL(string: self.url!)
+        let request = URLRequest(url: requestURL!)
         self.webview.delegate = self;
         self.webview.loadRequest(request)
         super.viewWillAppear(animated);
     }
     
-    func webViewDidStartLoad(_webView: UIWebView){
-        UIApplication.sharedApplication().networkActivityIndicatorVisible = true;
+    func webViewDidStartLoad(_ _webView: UIWebView){
+        UIApplication.shared.isNetworkActivityIndicatorVisible = true;
         activity.startAnimating();
     }
     
-    func webViewDidFinishLoad(_webView: UIWebView!){
-        UIApplication.sharedApplication().networkActivityIndicatorVisible = false;
+    func webViewDidFinishLoad(_ _webView: UIWebView!){
+        UIApplication.shared.isNetworkActivityIndicatorVisible = false;
         activity.stopAnimating();
     }
     
-    func webView(_webView: UIWebView!,
-        shouldStartLoadWithRequest request: NSURLRequest!,
+    func webView(_ _webView: UIWebView!,
+        shouldStartLoadWith request: URLRequest,
         navigationType _navigationType: UIWebViewNavigationType) -> Bool{
-            NSLog("Loading URL :%@",request.URL.absoluteString);
+            NSLog("Loading URL :%@",request.url?.absoluteString ?? "<nil>");
             return true;
     }
     
-    func webView(_webView: UIWebView!,
-        didFailLoadWithError error: NSError!) {
-            NSLog("Failed to load with error :%@",error.debugDescription);
+    func webView(_ _webView: UIWebView!,
+        didFailLoadWithError error: Error) {
+            NSLog("Failed to load with error :%@",error.localizedDescription);
     }
 
     /*

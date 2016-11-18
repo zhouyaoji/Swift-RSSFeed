@@ -16,61 +16,61 @@ class MyTableViewController: UITableViewController, MWFeedParserDelegate {
         super.viewDidLoad()
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         request()
     }
 
     func request() {
-        let URL = NSURL(string: "https://in.news.yahoo.com/rss/")
+        let URL = Foundation.URL(string: "https://in.news.yahoo.com/rss/")
         let feedParser = MWFeedParser(feedURL: URL);
-        feedParser.delegate = self
-        feedParser.feedParseType = ParseTypeFull
-        feedParser.parse()
+        feedParser?.delegate = self
+        feedParser?.feedParseType = ParseTypeFull
+        feedParser?.parse()
     }
     
-    func feedParserDidStart(parser: MWFeedParser) {
-        UIApplication.sharedApplication().networkActivityIndicatorVisible = true;
+    func feedParserDidStart(_ parser: MWFeedParser) {
+        UIApplication.shared.isNetworkActivityIndicatorVisible = true;
         self.items = [MWFeedItem]()
     }
     
-    func feedParserDidFinish(parser: MWFeedParser) {
-        UIApplication.sharedApplication().networkActivityIndicatorVisible = true;
+    func feedParserDidFinish(_ parser: MWFeedParser) {
+        UIApplication.shared.isNetworkActivityIndicatorVisible = true;
         self.tableView.reloadData()
     }
     
     
-    func feedParser(parser: MWFeedParser, didParseFeedInfo info: MWFeedInfo) {
+    func feedParser(_ parser: MWFeedParser, didParseFeedInfo info: MWFeedInfo) {
         //println(info)
         self.title = info.title
     }
     
-    func feedParser(parser: MWFeedParser, didParseFeedItem item: MWFeedItem) {
+    func feedParser(_ parser: MWFeedParser, didParseFeedItem item: MWFeedItem) {
         //println(item)
         self.items.append(item)
     }
     
     // #pragma mark - Table view data source
-    override func numberOfSectionsInTableView(tableView: UITableView?) -> Int {
+    override func numberOfSections(in tableView: UITableView?) -> Int {
         return 1
     }
 
-    override func tableView(tableView: UITableView?, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView?, numberOfRowsInSection section: Int) -> Int {
         return self.items.count
     }
     
-    override func tableView(tableView: UITableView!, heightForRowAtIndexPath indexPath: NSIndexPath!) -> CGFloat {
+    override func tableView(_ tableView: UITableView!, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 80
     }
     
-    override func tableView(tableView: UITableView!, cellForRowAtIndexPath indexPath: NSIndexPath!) -> UITableViewCell? {
-        let cell:MyTableViewCell = tableView.dequeueReusableCellWithIdentifier("Cell", forIndexPath: indexPath) as MyTableViewCell
+    override func tableView(_ tableView: UITableView!, cellForRowAt indexPath: IndexPath!) -> UITableViewCell {
+        let cell:MyTableViewCell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! MyTableViewCell
 
         // Configure the cell...
         let item = self.items[indexPath.row] as MWFeedItem
         //println(item.summary)
         cell.FeedLbl.text = item.title
-        cell.FeedLbl.font = UIFont.systemFontOfSize(14.0)
+        cell.FeedLbl.font = UIFont.systemFont(ofSize: 14.0)
         cell.FeedLbl.numberOfLines = 0
         cell.timestamp.text = item.date.description
         cell.img.image = UIImage(named:"a.png")
@@ -82,10 +82,10 @@ class MyTableViewController: UITableViewController, MWFeedParserDelegate {
         return cell
     }
     
-    override func prepareForSegue(segue: UIStoryboardSegue?, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue?, sender: Any?) {
         if (segue!.identifier == "Detail") {
-            var record = self.items[self.tableView.indexPathForSelectedRow().row] as MWFeedItem
-            let WebicewVC = segue!.destinationViewController as  WebviewController
+            let record = self.items[(self.tableView.indexPathForSelectedRow?.row)!] as MWFeedItem
+            let WebicewVC = segue!.destination as!  WebviewController
             WebicewVC.url = record.link
             WebicewVC.Headline = record.title
         }
